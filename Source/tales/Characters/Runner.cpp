@@ -23,11 +23,15 @@ ARunner::ARunner()
 }
 void ARunner::VfxVisible()
 {
-	DashVfxComponent->bHiddenInGame = false;
+	//DashVfxComponent->bHiddenInGame = false;
+	//DashVfxComponent->SetVisibility(false, true);
+	DashVfxComponent->SetHiddenInGame(false);
 }
 void ARunner::VfxInvisible()
 {
-	DashVfxComponent->bHiddenInGame=true;
+	//DashVfxComponent->bHiddenInGame=true;
+	//DashVfxComponent->SetVisibility(true, true);
+	DashVfxComponent->SetHiddenInGame(true);
 }
 void ARunner::SetVfxComponent(UNiagaraComponent* VfxComponent)
 {
@@ -179,6 +183,14 @@ void ARunner::Tick(float DeltaTime=3.f)
 			ChangeRunnerAngry(ECharacterAngry::ECS_Charge);
 		}
 	}
+	
+	
+	if (GEngine)
+	{
+		FString DistanceLog = FString::Printf(TEXT("Boolean: %d"), DashVfxComponent->bHiddenInGame);
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, DistanceLog);
+	}
+
 	Super::Tick(DeltaTime);
 }
 

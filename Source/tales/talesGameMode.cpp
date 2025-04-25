@@ -462,7 +462,7 @@ void AtalesGameMode::UpdateElectricVFX(float DeltaTime)
         // Y축 기준으로 Min 몬스터를 지났는지 확인
         if (GEngine)
         {
-            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("data: %f %f"), NowLocation.Y, MinMonsterLocation.Y));
+            //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("data: %f %f"), NowLocation.Y, MinMonsterLocation.Y));
             //UE_LOG(LogTemp, Warning, TEXT("data: %f %f"), NowLocation.Y, MinMonsterLocation.Y);
         }
         if (NowLocation.Y <= MinMonsterLocation.Y)
