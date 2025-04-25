@@ -16,6 +16,8 @@ class TALES_API ARunner : public AtalesCharacter
 	GENERATED_BODY()
 public:
 	ARunner();
+	void StunWidgetVisible(bool VisibleType);
+	void StunWidgetInit();
 	void VfxVisible();
 	void VfxInvisible();
 	UFUNCTION()
@@ -75,7 +77,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<class UUserWidget> HealthWidgetClass;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UUserWidget> StunWidgetClass;
 
 	void KnockBackLanding();
 
@@ -97,6 +100,8 @@ protected:
 	void StopAngry();
 	virtual void BeginPlay() override;
 
+	void HealthWidgetInit();
+
 	float RunningSpeed;
 	float DashSpeed;
 
@@ -106,6 +111,9 @@ protected:
 	class UNiagaraComponent* DashVfxComponent;
 
 	void SetVfxComponent(UNiagaraComponent* VfxComponent);
+
+	UPROPERTY(VisibleAnywhere, Category = UI)
+	class UWidgetComponent* StunWidgetComponent;
 
 private:
 	UPROPERTY(EditAnywhere,Category=Animation)
@@ -132,4 +140,7 @@ private:
 	UInputAction* AngryAction;
 
 	class UUserInterfaceRunner* HealthWidget;
+	class UStunUserWidget* StunWidget;
+
+	
 };

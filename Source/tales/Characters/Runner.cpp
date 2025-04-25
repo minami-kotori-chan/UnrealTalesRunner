@@ -9,6 +9,8 @@
 #include "../UserInterfaceRunner.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
+#include "../StunUserWidget.h"
+#include "Components/WidgetComponent.h"
 
 ARunner::ARunner()
 {
@@ -20,6 +22,20 @@ ARunner::ARunner()
 	SetVfxComponent(DashVfxComponent);
 	VfxInvisible();
 	
+	StunWidgetInit();
+	
+}
+void ARunner::StunWidgetVisible(bool VisibleType)
+{
+	StunWidgetComponent->SetHiddenInGame(VisibleType);
+}
+void ARunner::StunWidgetInit()
+{
+	StunWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("StunWidgetComponent"));
+	StunWidgetComponent->SetupAttachment(RootComponent);
+	StunWidgetComponent->SetRelativeLocation(FVector(0.f,0.f,30.f));
+	StunWidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	StunWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 }
 void ARunner::VfxVisible()
 {
@@ -212,6 +228,7 @@ void ARunner::StunStart(float DeltaTime)
 	ChangeRunnerState(ECharacterState::ECS_Stun);
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ThisClass::EndStun, DeltaTime, false);
 	AngerUp();
+	StunWidgetVisible(false);
 }
 
 void ARunner::KnockBackStart(float DeltaTime)
@@ -329,6 +346,7 @@ void ARunner::ReduceStun(float DeltaTime)
 void ARunner::EndStun()
 {
 	ChangeRunnerState(ECharacterState::ECS_Idle);
+	StunWidgetVisible(true);
 }
 
 void ARunner::CallReduceStun(float DeltaTime)
@@ -462,9 +480,32 @@ void ARunner::BeginPlay()
 	RunningSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	UE_LOG(LogTemp, Log, TEXT("Max Walking Speed: %f"), RunningSpeed);
 	DashSpeed = RunningSpeed * 2;
+	HealthWidgetInit();
+	// 위젯 클래스가 설정되어 있다면
+	if (StunWidgetClass)
+	{
+		// 컴포넌트에 위젯 클래스 설정
+		StunWidgetComponent->SetWidgetClass(StunWidgetClass);
+
+		// 위젯 인스턴스 생성
+		StunWidget = CreateWidget<UStunUserWidget>(GetWorld(), StunWidgetClass);
+		if (StunWidget)
+		{
+			// 위젯 컴포넌트에 위젯 인스턴스 설정
+			StunWidgetComponent->SetWidget(StunWidget);
+
+			// 추가 설정
+			//StunWidget->Disable();
+			StunWidgetVisible(true);
+		}
+	}
+}
+
+void ARunner::HealthWidgetInit()
+{
 	if (HealthWidgetClass)
 	{
-		
+
 		HealthWidget = Cast<UUserInterfaceRunner>(CreateWidget(GetWorld(), HealthWidgetClass));
 		if (HealthWidget)
 		{
