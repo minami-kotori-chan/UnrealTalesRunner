@@ -112,7 +112,7 @@ void ARunner::Jump()
 	if (CharacterStartFalling == ECharacterStartFalling::ECS_StartFalling)
 	{
 		//CharacterStartFalling = ECharacterStartFalling::ECS_Normal;
-		PlayRollingAnimation(2.f);
+		PlayRollingAnimation(1.f);
 		return;
 	}
 	if (JumpCurrentCount == 1)
@@ -230,7 +230,7 @@ void ARunner::CreateGhost(float DeltaTime)
 {
 	if (!IsAnger() || !(GetCharacterMovement()->Velocity.Size() > 0.f)) return;
 	Timecount += DeltaTime;
-	if (Timecount >= 0.1f)
+	if (Timecount >= TimeLimit)
 	{
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
@@ -531,7 +531,7 @@ void ARunner::AddCallbackEndAnimation()
 	if (AnimInstance)
 	{
 		// 몽타쥬 끝 이벤트에 콜백 함수 등록
-		AnimInstance->OnMontageEnded.AddDynamic(this, &ARunner::OnRollingEnd);
+		//AnimInstance->OnMontageEnded.AddDynamic(this, &ARunner::OnRollingEnd);
 	}
 }
 

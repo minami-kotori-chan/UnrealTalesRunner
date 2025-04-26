@@ -32,6 +32,8 @@ public:
 	void StartBounce(const FVector& OtherLocationVector, float LaunchStrength, float ZSize);
 
 	bool CanMove();
+
+	void ChangeRollingAnimationCanPlay() { bIsRollingAnimationPlaying = false; };
 protected:
 	virtual void Jump() override;
 	virtual void Move(const FInputActionValue& Value);
@@ -155,6 +157,8 @@ private:
 	class UStunUserWidget* StunWidget;
 
 	float Timecount = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GhostTime", meta = (AllowPrivateAccess = "true"))
+	float TimeLimit=0.1f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
 	TSubclassOf<AActor> ActorToSpawn;
