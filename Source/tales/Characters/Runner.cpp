@@ -11,6 +11,7 @@
 #include "NiagaraSystem.h"
 #include "../StunUserWidget.h"
 #include "Components/WidgetComponent.h"
+#include "../Actors/GhostTail.h"
 
 ARunner::ARunner()
 {
@@ -220,8 +221,24 @@ void ARunner::Tick(float DeltaTime=3.f)
 		//FString DistanceLog = FString::Printf(TEXT("Boolean: %d"), bIsRollingAnimationPlaying);
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, DistanceLog);
 	}
+	CreateGhost(DeltaTime);
 
 	Super::Tick(DeltaTime);
+}
+
+void ARunner::CreateGhost(float DeltaTime)
+{
+	if (!IsAnger() || !(GetCharacterMovement()->Velocity.Size() > 0.f)) return;
+	Timecount += DeltaTime;
+	if (Timecount >= 0.1f)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		(Cast<AGhostTail>(GetWorld()->SpawnActor<AActor>(ActorToSpawn, GetActorLocation() - FVector(0.f, 0.f, 90.f), GetActorRotation() - FRotator(0.f, 90.f, 0.f), SpawnParams)))->Init(GetMesh());//관리하는 포인터가 없어도 되네? 리플렉션시스템에서 삭제시키는거 아니었나
+
+		Timecount = 0.f;
+
+	}
 }
 
 void ARunner::ChangeRunnerAngry(ECharacterAngry ChangeState)

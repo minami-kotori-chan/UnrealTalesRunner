@@ -38,6 +38,8 @@ protected:
 	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) override;
 	virtual void Tick(float DeltaTime);
 
+	void CreateGhost(float DeltaTime);
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Dash")
 	float MaxStamina = 100.f;
 
@@ -152,5 +154,10 @@ private:
 	class UUserInterfaceRunner* HealthWidget;
 	class UStunUserWidget* StunWidget;
 
-	
+	float Timecount = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
+	TSubclassOf<AActor> ActorToSpawn;
+
+	TArray<class AGhostTail*> GhostArray;
 };
