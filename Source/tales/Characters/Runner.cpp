@@ -108,6 +108,12 @@ void ARunner::Jump()
 	{
 		return;
 	}
+	if (CharacterStartFalling == ECharacterStartFalling::ECS_StartFalling)
+	{
+		//CharacterStartFalling = ECharacterStartFalling::ECS_Normal;
+		PlayRollingAnimation(2.f);
+		return;
+	}
 	if (JumpCurrentCount == 1)
 	{
 		PlayRollingAnimation();
@@ -132,6 +138,13 @@ void ARunner::Move(const FInputActionValue& Value)
 void ARunner::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
 {
 	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
+	if (CharacterStartFalling==ECharacterStartFalling::ECS_StartFalling)
+	{
+		if (!GetCharacterMovement()->IsFalling())
+		{
+			CharacterStartFalling = ECharacterStartFalling::ECS_Normal;
+		}
+	}
 	if (CharacterState == ECharacterState::ECS_Stun)
 	{
 
@@ -203,7 +216,8 @@ void ARunner::Tick(float DeltaTime=3.f)
 	
 	if (GEngine)
 	{
-		FString DistanceLog = FString::Printf(TEXT("Boolean: %d"), DashVfxComponent->bHiddenInGame);
+		//FString DistanceLog = FString::Printf(TEXT("Boolean: %d"), DashVfxComponent->bHiddenInGame);
+		//FString DistanceLog = FString::Printf(TEXT("Boolean: %d"), bIsRollingAnimationPlaying);
 		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, DistanceLog);
 	}
 
@@ -480,29 +494,27 @@ void ARunner::StopAngry()
 void ARunner::BeginPlay()
 {
 	Super::BeginPlay();
-	GetCharacterMovement()->MaxAcceleration = 100000.f;
+	GetCharacterMovement()->MaxAcceleration = 100000.f;//가속도를 최대에 가깝게 줘서 속도 증가 시간을 없앰
 
+	CharacterStartFalling = ECharacterStartFalling::ECS_StartFalling;//게임이 시작되면서 플레이어 상태변경이 있는듯함 따라서 시작시에 State변경 해서 해결
+
+	AddCallbackEndAnimation();
+	
 	RunningSpeed = GetCharacterMovement()->MaxWalkSpeed;
 	UE_LOG(LogTemp, Log, TEXT("Max Walking Speed: %f"), RunningSpeed);
 	DashSpeed = RunningSpeed * 2;
 	HealthWidgetInit();
-	// 위젯 클래스가 설정되어 있다면
-	if (StunWidgetClass)
+	StunWidgetCreate();
+}
+
+void ARunner::AddCallbackEndAnimation()
+{
+	// 애니메이션 인스턴스 가져오기
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance)
 	{
-		// 컴포넌트에 위젯 클래스 설정
-		StunWidgetComponent->SetWidgetClass(StunWidgetClass);
-
-		// 위젯 인스턴스 생성
-		StunWidget = CreateWidget<UStunUserWidget>(GetWorld(), StunWidgetClass);
-		if (StunWidget)
-		{
-			// 위젯 컴포넌트에 위젯 인스턴스 설정
-			StunWidgetComponent->SetWidget(StunWidget);
-
-			// 추가 설정
-			//StunWidget->Disable();
-			StunWidgetVisible(true);
-		}
+		// 몽타쥬 끝 이벤트에 콜백 함수 등록
+		AnimInstance->OnMontageEnded.AddDynamic(this, &ARunner::OnRollingEnd);
 	}
 }
 
@@ -522,14 +534,43 @@ void ARunner::HealthWidgetInit()
 		}
 	}
 }
-
-void ARunner::PlayRollingAnimation()
+void ARunner::StunWidgetCreate()
 {
-	if (RollingAnimation)
+	// 위젯 클래스가 설정되어 있다면
+	if (StunWidgetClass)
+	{
+		// 컴포넌트에 위젯 클래스 설정
+		StunWidgetComponent->SetWidgetClass(StunWidgetClass);
+
+		// 위젯 인스턴스 생성
+		StunWidget = CreateWidget<UStunUserWidget>(GetWorld(), StunWidgetClass);
+		if (StunWidget)
+		{
+			// 위젯 컴포넌트에 위젯 인스턴스 설정
+			StunWidgetComponent->SetWidget(StunWidget);
+
+			// 추가 설정
+			//StunWidget->Disable();
+			StunWidgetVisible(true);
+		}
+	}
+}
+void ARunner::PlayRollingAnimation(float AnimationPlayRate)
+{
+	if (RollingAnimation && bIsRollingAnimationPlaying==false)
 	{
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		AnimInstance->Montage_Play(RollingAnimation);
+		AnimInstance->Montage_Play(RollingAnimation, AnimationPlayRate); 
+		bIsRollingAnimationPlaying = true;
 	}
+}
+void ARunner::OnRollingEnd(UAnimMontage* Montage, bool bInterrupted)
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, TEXT("MontageEnded"));
+	}
+	bIsRollingAnimationPlaying = false;
 }
 
 void ARunner::DashFailed()

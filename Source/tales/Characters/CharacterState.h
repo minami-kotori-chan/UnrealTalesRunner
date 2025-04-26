@@ -25,3 +25,10 @@ enum class ECharacterDash : uint8
 	ECS_Normal UMETA(DisplayName = "Character Normal"),
 	ECS_Dash UMETA(DisplayName = "Character Dash"),
 };
+
+UENUM(BlueprintType)
+enum class ECharacterStartFalling : uint8
+{
+	ECS_Normal UMETA(DisplayName = "Character Normal"),
+	ECS_StartFalling UMETA(DisplayName = "Character StartFalling"),
+};

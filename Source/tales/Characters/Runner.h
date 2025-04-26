@@ -63,6 +63,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	ECharacterState CharacterState = ECharacterState::ECS_Idle;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	ECharacterStartFalling CharacterStartFalling = ECharacterStartFalling::ECS_StartFalling;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LandingDash")
 	bool bLandingDashRequested = false;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LandingDash")
@@ -100,6 +103,13 @@ protected:
 	void StopAngry();
 	virtual void BeginPlay() override;
 
+	void AddCallbackEndAnimation();
+	UFUNCTION()
+	void OnRollingEnd(UAnimMontage* Montage, bool bInterrupted);
+	
+
+	void StunWidgetCreate();
+
 	void HealthWidgetInit();
 
 	float RunningSpeed;
@@ -119,7 +129,7 @@ private:
 	UPROPERTY(EditAnywhere,Category=Animation)
 	TObjectPtr<class UAnimMontage> RollingAnimation;
 	
-	void PlayRollingAnimation();
+	void PlayRollingAnimation(float AnimationPlayRate=1.0f);
 	FTimerHandle TimerHandle;
 	FTimerHandle TimerHandleKnockBack;
 	FTimerHandle TimerHandleBurnOut;
@@ -127,7 +137,7 @@ private:
 	
 	bool BwasInputed=false;
 	bool DashBtnPressed = false;
-	
+	bool bIsRollingAnimationPlaying = false;
 	void DashFailed();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
