@@ -28,6 +28,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Stamina")
     void UpdateAnger(float CurrentAnger, float MaxAnger);
     void ChangeAngry();
+    void ChangeCharge();
     void ChangeOrigin();
     FLinearColor OriginalStaminaColor;
     FLinearColor OriginalAngerColor;

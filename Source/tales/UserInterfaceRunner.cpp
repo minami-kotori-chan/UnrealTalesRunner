@@ -31,6 +31,18 @@ void UUserInterfaceRunner::ChangeAngry()
         StaminaBar->SetFillColorAndOpacity(PurpleColor);
         AngerBar->SetFillColorAndOpacity(PurpleColor);
     }
+    
+}
+
+void UUserInterfaceRunner::ChangeCharge()
+{
+    if (StaminaBar && AngerBar)
+    {
+        // 노란색으로 변경합니다.
+        FLinearColor PurpleColor(1.0f, 1.0f, 0.0f, 1.0f);
+        StaminaBar->SetFillColorAndOpacity(PurpleColor);
+        AngerBar->SetFillColorAndOpacity(PurpleColor);
+    }
 }
 
 void UUserInterfaceRunner::ChangeOrigin()

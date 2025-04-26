@@ -456,11 +456,16 @@ void ARunner::StopDash()
 
 void ARunner::StartAngry()
 {
-	ChangeRunnerAngry(ECharacterAngry::ECS_Angry);
+	if (CharacterAngry == ECharacterAngry::ECS_Charge)
+	{
+		ChangeRunnerAngry(ECharacterAngry::ECS_Angry);
 
-	GetCharacterMovement()->MaxWalkSpeed = DashSpeed*1.5;
-	// 10초 후에 ResetAnger 함수를 호출하도록 타이머 설정
-	GetWorldTimerManager().SetTimer(AngryTimerHandle, this, &ARunner::StopAngry, 10.0f, false);
+		GetCharacterMovement()->MaxWalkSpeed = DashSpeed * 1.5;
+		// 10초 후에 ResetAnger 함수를 호출하도록 타이머 설정
+		GetWorldTimerManager().SetTimer(AngryTimerHandle, this, &ARunner::StopAngry, 10.0f, false);
+		HealthWidget->ChangeCharge();
+	}
+	
 }
 
 void ARunner::StopAngry()
