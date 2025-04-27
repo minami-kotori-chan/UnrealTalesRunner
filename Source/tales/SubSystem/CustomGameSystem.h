@@ -21,4 +21,7 @@ public:
 	float StartZ, EndZ;
 	FVector DungeonStartVector;
 	FVector DungeonEndVector;
+
+	int32 DungeonLength;
+	void SetDungeonLength(float Length) { DungeonLength = (int32)Length; };
 };

@@ -154,7 +154,21 @@ void AtalesGameMode::InitGame(const FString& MapName, const FString& Options, FS
 
 void AtalesGameMode::SpawnPath()
 {
-    const int32 SpawnCount = 30;
+    
+    int32 SpawnCountTemp = 10;
+    UGameInstance* GameInstance = GetGameInstance();
+    if (GameInstance)
+    {
+        UCustomGameSystem* CustomSubsystem = GameInstance->GetSubsystem<UCustomGameSystem>();
+        if (CustomSubsystem)
+        {
+            SpawnCountTemp = CustomSubsystem->DungeonLength;
+        }
+    }
+
+    const int32 SpawnCount = SpawnCountTemp;
+    UE_LOG(LogTemp, Warning, TEXT("DungeonPathLength is %d."),SpawnCount);
+
     FVector SpawnLocation(1000.0f, 0.0f, 0.0f);  // 초기 위치
     const int32 UpwardCount = 5; // Z축 방향(위쪽) 생성 개수
     Runner = Cast<ARunner>(UGameplayStatics::GetPlayerCharacter(this, 0));
@@ -194,7 +208,7 @@ void AtalesGameMode::SpawnPath()
 }
 void AtalesGameMode::SpawnPathWithVertical()
 {
-    const int32 HorizontalSpawnCount = 30;  // Y축 방향 생성 개수
+    const int32 HorizontalSpawnCount = GetSpawnCount();  // Y축 방향 생성 개수
     const int32 VerticalSpawnCount = 5;     // Z축 방향(위쪽) 생성 개수
     const int32 VerticalStartIndex = 4;
     FVector SpawnLocation(1000.0f, 0.0f, 0.0f);  // 초기 위치
@@ -245,6 +259,19 @@ void AtalesGameMode::SpawnPathWithVertical()
         }
         
     }
+}
+int32 AtalesGameMode::GetSpawnCount()
+{
+    UGameInstance* GameInstance = GetGameInstance();
+    if (GameInstance)
+    {
+        UCustomGameSystem* CustomSubsystem = GameInstance->GetSubsystem<UCustomGameSystem>();
+        if (CustomSubsystem)
+        {
+            return CustomSubsystem->DungeonLength;
+        }
+    }
+    return 10;
 }
 // Z축으로 통로를 쌓는 함수
 void AtalesGameMode::SpawnVerticalPaths(const FVector& StartLocation, int32 Count)

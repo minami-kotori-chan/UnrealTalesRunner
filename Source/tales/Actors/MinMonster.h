@@ -27,7 +27,7 @@ protected:
 	UStaticMeshComponent* StaticMeshComponent;
 	
 	UPROPERTY(EditAnywhere)
-	float MoveSpeed=100.f;
+	float MoveSpeed=700.f;
 	float MoveSpeedExpend = 1.f;
 	UFUNCTION()
 	void OnMinMonsterOverlap(AActor* OverlappedActor, AActor* OtherActor);

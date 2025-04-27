@@ -30,6 +30,13 @@ protected:
 
 	UFUNCTION()
 	void OnSliderValueChanged(float Value);
-private:
+	UFUNCTION()
+	void OnStartButtonClicked();
+	void SetSubSystemValue(float Value);
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level")
+	FName LevelToLoad;
+private:
+	
 };

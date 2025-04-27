@@ -21,6 +21,7 @@ protected:
 	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 	void SpawnPath();
 	void SpawnPathWithVertical();
+	int32 GetSpawnCount();
 	void SpawnVerticalPaths(const FVector& StartLocation, int32 Count);
 	void SpawnHorizontalPaths(const FVector& StartLocation, int32 Count, const int32& StartIndexNumber);
 	void SpawnAllMonster();

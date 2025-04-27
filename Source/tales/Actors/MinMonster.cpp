@@ -41,6 +41,8 @@ void AMinMonster::MoveActor(float DeltaTime)
     // Y 좌표에 TotalDungeonLength의 1/100 만큼 증가시킴
     float NewY = CurrentLocation.Y + (TotalDungeonLength * DeltaTime / MoveSpeed)* MoveSpeedExpend;
 
+	NewY = CurrentLocation.Y + MoveSpeedExpend * DeltaTime * MoveSpeed;
+
     FVector NewLocation = FVector(CurrentLocation.X, NewY, CurrentLocation.Z);
     SetActorLocation(NewLocation);
 }

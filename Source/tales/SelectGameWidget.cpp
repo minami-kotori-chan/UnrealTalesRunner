@@ -4,6 +4,9 @@
 #include "SelectGameWidget.h"
 #include "Components/Slider.h"
 #include "Components/TextBlock.h"
+#include "SubSystem/CustomGameSystem.h"
+#include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
 
 void USelectGameWidget::NativeConstruct()
 {
@@ -17,6 +20,10 @@ void USelectGameWidget::NativeConstruct()
 
         // 초기값 설정
         OnSliderValueChanged(Slider->GetValue());
+    }
+    if (StartButton)
+    {
+        StartButton->OnClicked.AddDynamic(this, &USelectGameWidget::OnStartButtonClicked);
     }
 }
 
@@ -39,4 +46,33 @@ void USelectGameWidget::OnSliderValueChanged(float Value)
     }
     
     
+}
+
+void USelectGameWidget::OnStartButtonClicked()
+{
+    SetSubSystemValue(Slider->GetValue());
+    // 입력 모드를 게임 모드로 변경
+    APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+    if (PlayerController)
+    {
+        // 게임 모드로 설정 (UI 모드에서 일반 게임 모드로 변경)
+        FInputModeGameOnly InputMode;
+        PlayerController->SetInputMode(InputMode);
+        // 마우스 커서 숨기기
+        PlayerController->bShowMouseCursor = false;
+    }
+    UGameplayStatics::OpenLevel(GetWorld(), FName("RunningMap"));
+}
+
+void USelectGameWidget::SetSubSystemValue(float Value)
+{
+    UGameInstance* GameInstance = GetGameInstance();
+    if (GameInstance)
+    {
+        UCustomGameSystem* CustomSubsystem = GameInstance->GetSubsystem<UCustomGameSystem>();
+        if (CustomSubsystem)
+        {
+            CustomSubsystem->SetDungeonLength(Value);
+        }
+    }
 }
