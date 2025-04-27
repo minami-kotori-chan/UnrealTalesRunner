@@ -278,7 +278,7 @@ bool ARunner::IsAnger()
 	{
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, TEXT("AngryCalled"));
+			//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, TEXT("AngryCalled"));
 		}
 	}
 	return CharacterAngry == ECharacterAngry::ECS_Angry;
