@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "talesGameMode.generated.h"
 
+
 UCLASS(minimalapi)
 class AtalesGameMode : public AGameModeBase
 {
@@ -13,7 +14,6 @@ class AtalesGameMode : public AGameModeBase
 
 public:
 	AtalesGameMode();
-	
 protected:
 	virtual void BeginPlay() override;
 	void SetSubSystemData();

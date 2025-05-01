@@ -95,6 +95,7 @@ void AtalesGameMode::BeginPlay()
     //RestartAllPlayer();
     
     Super::BeginPlay();
+    Runner = Cast<ARunner>(UGameplayStatics::GetPlayerCharacter(this, 0));
 }
 AActor* AtalesGameMode::ChoosePlayerStart_Implementation(AController* Player)
 {
@@ -171,7 +172,7 @@ void AtalesGameMode::SpawnPath()
 
     FVector SpawnLocation(1000.0f, 0.0f, 0.0f);  // 초기 위치
     const int32 UpwardCount = 5; // Z축 방향(위쪽) 생성 개수
-    Runner = Cast<ARunner>(UGameplayStatics::GetPlayerCharacter(this, 0));
+    //Runner = Cast<ARunner>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
     for (int32 i = 0; i < SpawnCount; i++)
     {
@@ -213,7 +214,7 @@ void AtalesGameMode::SpawnPathWithVertical()
     const int32 VerticalStartIndex = 4;
     FVector SpawnLocation(1000.0f, 0.0f, 0.0f);  // 초기 위치
 
-    Runner = Cast<ARunner>(UGameplayStatics::GetPlayerCharacter(this, 0));
+    //Runner = Cast<ARunner>(UGameplayStatics::GetPlayerCharacter(this, 0));
 
     if (!DungeonPathBP)
     {
@@ -447,7 +448,7 @@ void AtalesGameMode::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
     UpdateProgressBar();
-    UpdateProgressVal(DeltaTime);
+    //UpdateProgressVal(DeltaTime);
     if (CharacterProgress <= MinimumProgress) 
     {
         if (GEngine)
@@ -511,7 +512,10 @@ void AtalesGameMode::UpdateElectricVFX(float DeltaTime)
 
 void AtalesGameMode::UpdateProgressBar()
 {
-    
+    if (GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("DungeonLength: %f"), TotalDungeonLength));
+    }
     if (!Runner || TotalDungeonLength <= 0.f)
     {
         return;
@@ -535,6 +539,19 @@ void AtalesGameMode::UpdateProgressBar()
         GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("MinProgress: %f"), MinimumProgress));
     }
     CharacterProgress = Progress;
+    
+
+    UGameInstance* GameInstance = GetGameInstance();
+    if (GameInstance)
+    {
+        UCustomGameSystem* CustomSubsystem = GameInstance->GetSubsystem<UCustomGameSystem>();
+        if (CustomSubsystem)
+        {
+            CustomSubsystem->OnProgressChanged.Broadcast(MinimumProgress, Progress);//델리게이트 호출
+        }
+    }
+
+    //OnProgressUpdated.Broadcast(Progress, MinimumProgress);
 }
 
 void AtalesGameMode::UpdateProgressVal(float DeltaTime)

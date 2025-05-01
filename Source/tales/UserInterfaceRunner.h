@@ -22,6 +22,19 @@ public:
     UPROPERTY(meta = (BindWidget))
     class UProgressBar* AngerBar;
 
+    UPROPERTY(meta = (BindWidget))
+    class UProgressBar* GameProgressBar;
+
+    UPROPERTY(meta = (BindWidget))
+    class UImage* MarkerImage;
+
+    UPROPERTY(meta = (BindWidget))
+    class UCanvasPanel* Canvas;
+
+    // 진행도 업데이트 함수
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    void UpdateDungeonProgress(float DeadlineProgress, float CharacterProgress);
+
     // 체력 정보를 업데이트할 함수 (외부에서 호출하거나 Tick에서 자동 업데이트)
     UFUNCTION(BlueprintCallable, Category = "Stamina")
     void UpdateStamina(float CurrentStamina, float MaxStamina);

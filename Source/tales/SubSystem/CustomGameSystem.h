@@ -9,6 +9,9 @@
 /**
  * 
  */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FProgressUpdated, float, DeadlineProgress, float, CharacterProgress);
+
 UCLASS()
 class TALES_API UCustomGameSystem : public UGameInstanceSubsystem
 {
@@ -24,4 +27,6 @@ public:
 
 	int32 DungeonLength;
 	void SetDungeonLength(float Length) { DungeonLength = (int32)Length; };
+	UPROPERTY(BlueprintAssignable, Category = "Progress")
+	FProgressUpdated OnProgressChanged;
 };
