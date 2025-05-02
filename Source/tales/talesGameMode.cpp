@@ -340,8 +340,8 @@ void AtalesGameMode::SpawnHorizontalPaths(const FVector& StartLocation, int32 Co
 
     FVector SpawnLocation = StartLocation;
     float OffsetY = 0.0f;
-
-    for (int32 i = 0; i < Count; i++)
+    
+    for (int32 i = 0; i < Count+5; i++)
     {
         // 첫 번째 통로는 시작 위치에 생성
         if (i > 0)
@@ -360,10 +360,17 @@ void AtalesGameMode::SpawnHorizontalPaths(const FVector& StartLocation, int32 Co
         ADungeonPath* NewDungeonPath = GetWorld()->SpawnActor<ADungeonPath>(DungeonPathBP, SpawnTransform, SpawnParams);
         if (NewDungeonPath)
         {
-            DungeonPathArray.Add(NewDungeonPath);
+            if (i < Count)
+            {
+                DungeonPathArray.Add(NewDungeonPath);//마지막에 추가하는 5개는 배열에 넣지 않음
+            }
             if (i == StartIndexNumber - 1)
             {
                 NewDungeonPath->SetStartPath();
+            }
+            else if (i == Count - 1) 
+            {
+                NewDungeonPath->SetEndPath();
             }
             else
             {
@@ -372,7 +379,12 @@ void AtalesGameMode::SpawnHorizontalPaths(const FVector& StartLocation, int32 Co
             // 경계 상자를 가져와서 Y축 크기를 계산
             FBox ActorBounds = NewDungeonPath->GetComponentsBoundingBox();
             FVector BoundsSize = ActorBounds.GetSize();
-            OffsetY = BoundsSize.Y;
+            if (OffsetY == 0.0f)
+            {
+                OffsetY = BoundsSize.Y;
+            }
+            
+            LastOffset = NewDungeonPath->GetActorLocation().Y;
         }
     }
 }
@@ -397,6 +409,8 @@ void AtalesGameMode::SpawnMaxMonster()
         SpawnedMaxMonster = GetWorld()->SpawnActor<AActor>(MinMonster, StartLocation, FRotator::ZeroRotator, SpawnParams);
         Cast<AMinMonster>(SpawnedMaxMonster)->SetPath(TotalDungeonLength);
         Cast<AMinMonster>(SpawnedMaxMonster)->SetSpeed(2.f);
+        Cast<AMinMonster>(SpawnedMaxMonster)->SetMaxEnableY(LastOffset);
+        UE_LOG(LogTemp, Log, TEXT("MAX Dungeon Length: %f"), LastOffset);
     }
 }
 void AtalesGameMode::SpawnMinMonster()
@@ -409,6 +423,7 @@ void AtalesGameMode::SpawnMinMonster()
         StartLocation.Z = DungeonPathArray[0]->GetComponentsBoundingBox().GetCenter().Z;
         SpawnedMinMonster = GetWorld()->SpawnActor<AActor>(MinMonster, StartLocation, FRotator::ZeroRotator, SpawnParams);
         Cast<AMinMonster>(SpawnedMinMonster)->SetPath(TotalDungeonLength);
+        Cast<AMinMonster>(SpawnedMinMonster)->SetMaxEnableY(LastOffset);
     }
 }
 
@@ -514,7 +529,7 @@ void AtalesGameMode::UpdateProgressBar()
 {
     if (GEngine)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("DungeonLength: %f"), TotalDungeonLength));
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("DungeonLength: %f"), TotalDungeonLength));
     }
     if (!Runner || TotalDungeonLength <= 0.f)
     {
@@ -535,8 +550,8 @@ void AtalesGameMode::UpdateProgressBar()
 
     if (GEngine)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Progress: %f"), Progress));
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("MinProgress: %f"), MinimumProgress));
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Progress: %f"), Progress));
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("MinProgress: %f"), MinimumProgress));
     }
     CharacterProgress = Progress;
     

@@ -19,7 +19,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	void SpawnTraps();
 	void ChangeWallMeshdisable(int32 MeshNumber);
+	void ChangeWallMeshMaterial(int32 MeshNumber);
 	void SetStartPath();
+	void SetEndPath();
 	void SetStartZPath();
 	void SetZPath();
 	void SetYPath();
@@ -42,6 +44,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Trap")
 	TSubclassOf<ATrap> TrapActorBClass;
+
+	UFUNCTION()
+	void OnGoalOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,bool bFromSweep, const FHitResult& SweepResult);
 private:
 
 };

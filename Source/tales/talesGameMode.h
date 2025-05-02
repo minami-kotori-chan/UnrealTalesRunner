@@ -93,6 +93,8 @@ protected:
 	float MaxSpeed=0.02f;
 
 	float CharacterProgress;
+
+	float LastOffset = 0.f;
 };
 
 

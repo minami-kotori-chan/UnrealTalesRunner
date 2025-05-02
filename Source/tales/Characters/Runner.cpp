@@ -12,6 +12,10 @@
 #include "../StunUserWidget.h"
 #include "Components/WidgetComponent.h"
 #include "../Actors/GhostTail.h"
+#include "Kismet/GameplayStatics.h"
+#include "../SubSystem/CustomGameSystem.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 
 ARunner::ARunner()
 {
@@ -24,7 +28,30 @@ ARunner::ARunner()
 	VfxInvisible();
 	
 	StunWidgetInit();
-	
+}
+void ARunner::ReachGoal()
+{
+	// 1) 입력 자체 비활성화
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		PC->SetIgnoreMoveInput(true);          // 입력 무시
+		//PC->SetIgnoreLookInput(true);          // 시선 입력 무시
+	}
+	// 1) 캡슐 콜리전 오버랩 이벤트 끄기
+	if (UCapsuleComponent* Capsule = GetCapsuleComponent())
+	{
+		Capsule->SetGenerateOverlapEvents(false);
+		//Capsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//Capsule->SetCollisionResponseToAllChannels(ECR_Ignore);
+	}
+
+	// 2) 메시 콜리전 오버랩 이벤트 끄기
+	if (USkeletalMeshComponent* MeshComponent = GetMesh())
+	{
+		MeshComponent->SetGenerateOverlapEvents(false);
+		//MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		//MeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	}
 }
 void ARunner::StunWidgetVisible(bool VisibleType)
 {

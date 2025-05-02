@@ -9,9 +9,9 @@
 /**
  * 
  */
-
+class ARunner;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FProgressUpdated, float, DeadlineProgress, float, CharacterProgress);
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterGoal, ARunner*,Runner);
 UCLASS()
 class TALES_API UCustomGameSystem : public UGameInstanceSubsystem
 {
@@ -29,4 +29,5 @@ public:
 	void SetDungeonLength(float Length) { DungeonLength = (int32)Length; };
 	UPROPERTY(BlueprintAssignable, Category = "Progress")
 	FProgressUpdated OnProgressChanged;
+	FOnCharacterGoal OnCharacterGoal;
 };

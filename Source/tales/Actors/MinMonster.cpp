@@ -91,6 +91,15 @@ void AMinMonster::MoveActor(float DeltaTime)
 		return;
 	}
     FVector CurrentLocation = GetActorLocation();
+    if (GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("LOCATION: %f"), CurrentLocation.Y));
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("MinProgress: %f"), MinimumProgress));
+    }
+    if (CurrentLocation.Y >= MaxEnableY)
+    {
+        return;
+    }
 
     // Y 좌표에 TotalDungeonLength의 1/100 만큼 증가시킴
     float NewY = CurrentLocation.Y + (TotalDungeonLength * DeltaTime / MoveSpeed)* MoveSpeedExpend;

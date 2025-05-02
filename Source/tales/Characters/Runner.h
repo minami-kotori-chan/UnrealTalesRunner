@@ -20,6 +20,7 @@ public:
 	void StunWidgetInit();
 	void VfxVisible();
 	void VfxInvisible();
+	void ReachGoal();
 	UFUNCTION()
 	void ChangeRunnerState(ECharacterState ChangeState);
 
