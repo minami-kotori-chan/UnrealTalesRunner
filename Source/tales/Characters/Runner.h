@@ -112,7 +112,6 @@ protected:
 	UFUNCTION()
 	void OnRollingEnd(UAnimMontage* Montage, bool bInterrupted);
 	
-
 	void StunWidgetCreate();
 
 	void HealthWidgetInit();
@@ -133,8 +132,13 @@ protected:
 private:
 	UPROPERTY(EditAnywhere,Category=Animation)
 	TObjectPtr<class UAnimMontage> RollingAnimation;
-	
+
+	UPROPERTY(EditAnywhere, Category = Animation)
+	TObjectPtr<class UAnimMontage> GoalAnimation;
+
 	void PlayRollingAnimation(float AnimationPlayRate=1.0f);
+	void PlayGoalAnimation();
+
 	FTimerHandle TimerHandle;
 	FTimerHandle TimerHandleKnockBack;
 	FTimerHandle TimerHandleBurnOut;

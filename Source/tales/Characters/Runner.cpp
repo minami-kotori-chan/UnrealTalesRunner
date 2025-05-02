@@ -52,6 +52,7 @@ void ARunner::ReachGoal()
 		//MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		//MeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	}
+	PlayGoalAnimation();
 }
 void ARunner::StunWidgetVisible(bool VisibleType)
 {
@@ -606,6 +607,14 @@ void ARunner::PlayRollingAnimation(float AnimationPlayRate)
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_Play(RollingAnimation, AnimationPlayRate); 
 		bIsRollingAnimationPlaying = true;
+	}
+}
+void ARunner::PlayGoalAnimation()
+{
+	if (RollingAnimation && bIsRollingAnimationPlaying == false)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_Play(GoalAnimation);
 	}
 }
 void ARunner::OnRollingEnd(UAnimMontage* Montage, bool bInterrupted)
