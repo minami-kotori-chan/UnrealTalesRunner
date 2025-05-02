@@ -23,6 +23,8 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* StartButton;
 
+	UPROPERTY(meta = (BindWidget))
+	class UImage* LoadingImage;
 	
 	
 protected:
@@ -32,6 +34,8 @@ protected:
 	void OnSliderValueChanged(float Value);
 	UFUNCTION()
 	void OnStartButtonClicked();
+	void OpenLevelWithDelay();
+	void ChangeGameInputMode();
 	void SetSubSystemValue(float Value);
 
 

@@ -7,6 +7,9 @@
 #include "SubSystem/CustomGameSystem.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/Image.h"
+#include "Components/CanvasPanel.h"
+#include "Components/CanvasPanelSlot.h"
 
 void USelectGameWidget::NativeConstruct()
 {
@@ -26,7 +29,6 @@ void USelectGameWidget::NativeConstruct()
         StartButton->OnClicked.AddDynamic(this, &USelectGameWidget::OnStartButtonClicked);
     }
 }
-
 
 void USelectGameWidget::OnSliderValueChanged(float Value)
 {
@@ -51,6 +53,23 @@ void USelectGameWidget::OnSliderValueChanged(float Value)
 void USelectGameWidget::OnStartButtonClicked()
 {
     SetSubSystemValue(Slider->GetValue());
+
+    if (UCanvasPanelSlot* CanvasSlot = Cast<UCanvasPanelSlot>(LoadingImage->Slot))
+    {
+        CanvasSlot->SetZOrder(10); // 높은 값이 앞에 표시됨
+        UE_LOG(LogTemp, Warning, TEXT("SetZorder."));
+    }
+    ChangeGameInputMode();
+    GetWorld()->GetTimerManager().SetTimerForNextTick(this, &USelectGameWidget::OpenLevelWithDelay);
+}
+
+void USelectGameWidget::OpenLevelWithDelay()
+{
+    UGameplayStatics::OpenLevel(GetWorld(), FName("RunningMap"));
+}
+
+void USelectGameWidget::ChangeGameInputMode()
+{
     // 입력 모드를 게임 모드로 변경
     APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
     if (PlayerController)
@@ -61,7 +80,7 @@ void USelectGameWidget::OnStartButtonClicked()
         // 마우스 커서 숨기기
         PlayerController->bShowMouseCursor = false;
     }
-    UGameplayStatics::OpenLevel(GetWorld(), FName("RunningMap"));
+    
 }
 
 void USelectGameWidget::SetSubSystemValue(float Value)
