@@ -25,6 +25,7 @@ public:
 	void CallCameraShake(float DeltaTime);
 	void SetPath(float TotalLength) { TotalDungeonLength = TotalLength; };
 	void SetSpeed(float Fspeed);
+	void SetMaxEnableY(float Y) { MaxEnableY = Y; };
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -47,6 +48,9 @@ protected:
 	bool EnableShake = false;
 
 	float RecallTime = 0.1f;
+
+	float MaxEnableY=1000.f;
+	
 private:	
 	float TotalDungeonLength=0.f;
 

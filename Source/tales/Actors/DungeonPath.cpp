@@ -4,6 +4,9 @@
 #include "DungeonPath.h"
 #include "Components/PointLightComponent.h"
 #include "Trap.h"
+#include "../Characters/Runner.h"
+#include "Kismet/GameplayStatics.h"
+#include "../SubSystem/CustomGameSystem.h"
 
 // Sets default values
 ADungeonPath::ADungeonPath()
@@ -106,7 +109,38 @@ void ADungeonPath::ChangeWallMeshdisable(int32 MeshNumber)
     WallMesh[MeshNumber]->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     WallMesh[MeshNumber]->SetVisibility(false, false);
 }
+void ADungeonPath::ChangeWallMeshMaterial(int32 MeshNumber)
+{
+    UMaterialInterface* GoalMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/EditorResources/FieldNodes/_Resources/M_FieldVolumePreview.M_FieldVolumePreview"));
+    if (GoalMaterial)
+    {
+        WallMesh[MeshNumber]->SetMaterial(0, GoalMaterial);
+    }
+    // 충돌 설정 변경 - 오버랩 이벤트를 위해
+    WallMesh[MeshNumber]->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    WallMesh[MeshNumber]->SetCollisionResponseToAllChannels(ECR_Ignore);
+    WallMesh[MeshNumber]->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
+    // 오버랩 이벤트 바인딩
+    WallMesh[MeshNumber]->OnComponentBeginOverlap.AddDynamic(this, &ADungeonPath::OnGoalOverlapBegin);
+}
+void ADungeonPath::OnGoalOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+    ARunner* Runner = Cast<ARunner>(OtherActor);
+    if (Runner && Runner->IsPlayerControlled())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Player reached goal!"));
+        Runner->ReachGoal();
+
+        UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
+        if (GameInstance)
+        {
+            UCustomGameSystem* CustomSubsystem = GameInstance->GetSubsystem<UCustomGameSystem>();
+            CustomSubsystem->OnCharacterGoal.Broadcast(Runner);//델리게이트 호출
+        }
+        
+    }
+}
 void ADungeonPath::SetStartPath()
 {
     ChangeWallMeshdisable(5);
@@ -114,7 +148,11 @@ void ADungeonPath::SetStartPath()
     ChangeWallMeshdisable(4);
     SpawnTraps();
 }
-
+void ADungeonPath::SetEndPath()
+{
+    ChangeWallMeshMaterial(3);
+    ChangeWallMeshdisable(4);
+}
 void ADungeonPath::SetStartZPath()
 {
     ChangeWallMeshdisable(0);

@@ -12,6 +12,8 @@
 #include "../StunUserWidget.h"
 #include "Components/WidgetComponent.h"
 #include "../Actors/GhostTail.h"
+#include "Kismet/GameplayStatics.h"
+#include "../SubSystem/CustomGameSystem.h"
 
 ARunner::ARunner()
 {
@@ -24,7 +26,15 @@ ARunner::ARunner()
 	VfxInvisible();
 	
 	StunWidgetInit();
-	
+}
+void ARunner::ReachGoal()
+{
+	// 1) 입력 자체 비활성화
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		PC->SetIgnoreMoveInput(true);          // 입력 무시
+		//PC->SetIgnoreLookInput(true);          // 시선 입력 무시
+	}
 }
 void ARunner::StunWidgetVisible(bool VisibleType)
 {
