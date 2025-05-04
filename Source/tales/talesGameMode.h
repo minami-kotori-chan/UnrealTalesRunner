@@ -14,6 +14,8 @@ class AtalesGameMode : public AGameModeBase
 
 public:
 	AtalesGameMode();
+	UFUNCTION()
+	void EndGame(ARunner* EndRunner);
 protected:
 	virtual void BeginPlay() override;
 	void SetSubSystemData();

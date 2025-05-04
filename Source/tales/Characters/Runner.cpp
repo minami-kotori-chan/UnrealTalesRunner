@@ -46,7 +46,7 @@ void ARunner::ReachGoal()
 }
 void ARunner::CharacterOut()
 {
-	//탈락 애니메이션 실행 추가 필요
+	//탈락 애니메이션 실행 추가 필요(애니메이션 몽타쥬말고 애니메이션 상태머신으로 처리했음 애니메이션 실행추가할 필요 X)
 	GameOver = true;
 	RunnerInputDisable();
 	GetCharacterMovement()->Velocity = FVector(0.f, 0.f, 0.f);

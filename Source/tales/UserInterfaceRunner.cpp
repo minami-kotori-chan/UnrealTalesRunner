@@ -103,12 +103,33 @@ void UUserInterfaceRunner::NativeConstruct()
         {
             CustomSubsystem->OnProgressChanged.AddDynamic(this, &UUserInterfaceRunner::UpdateDungeonProgress);
             CustomSubsystem->OnCharacterGoal.AddDynamic(this,&UUserInterfaceRunner::StopTimer);
-            CustomSubsystem->OnCharacterOut.AddDynamic(this, &UUserInterfaceRunner::StopTimer);
+            CustomSubsystem->OnCharacterOut.AddDynamic(this, &UUserInterfaceRunner::StopTimeOut);
         }
     }
 
 }
-
+void UUserInterfaceRunner::StopTimer(ARunner* Runner)
+{
+    bIsTimerRunning = false;
+    SetSubSystemData(CurrentTime);
+}
+void UUserInterfaceRunner::StopTimeOut(ARunner* Runner)
+{
+    bIsTimerRunning = false;
+    SetSubSystemData(0.f);
+}
+void UUserInterfaceRunner::SetSubSystemData(float Time)
+{
+    UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
+    if (GameInstance)
+    {
+        UCustomGameSystem* CustomSubsystem = GameInstance->GetSubsystem<UCustomGameSystem>();
+        if (CustomSubsystem)
+        {
+            CustomSubsystem->ClearTime = Time;
+        }
+    }
+}
 void UUserInterfaceRunner::UpdateDungeonProgress(float DeadlineProgress, float CharacterProgress)
 {
     if (GameProgressBar)

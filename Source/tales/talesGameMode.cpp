@@ -26,7 +26,39 @@ AtalesGameMode::AtalesGameMode()
 	}
 
     //GetWorldTimerManager().SetTimer(ElectricSpawnTimerHandle, this, &AtalesGameMode::SpawnElectricVFX, ElectricSpawnInterval, true);//타이머 생성
+    UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(GetWorld());
+    if (GameInstance)
+    {
+        UCustomGameSystem* CustomSubsystem = GameInstance->GetSubsystem<UCustomGameSystem>();
+        if (CustomSubsystem)
+        {
+            CustomSubsystem->OnCharacterGoal.AddDynamic(this, &AtalesGameMode::EndGame);
+            CustomSubsystem->OnCharacterOut.AddDynamic(this, &AtalesGameMode::EndGame);
+        }
+    }
     
+}
+void AtalesGameMode::EndGame(ARunner* EndRunner)
+{
+    //페이드 아웃 효과 추가
+    APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+    if (PC)
+    {
+        // 화면을 3초에 걸쳐 서서히 어둡게 만듦
+        PC->PlayerCameraManager->StartCameraFade(0.0f, 1.0f, 3.0f, FLinearColor::Black, false, true);
+
+    }
+
+    // 3초 후에 엔딩 레벨 열기
+    FTimerHandle TimerHandle;//사실 timerhandle은 말그대로 핸들링을 위한 거라서 타이머를 돌린뒤에 없어져도 된다. 따라서 멤버변수가 아닌 함수내에서 선언해서 사용하면 핸들링만 불가능한것이고 기능적으로는 문제없다.
+    GetWorldTimerManager().SetTimer(TimerHandle,
+        FTimerDelegate::CreateLambda([this]()
+            {
+                UGameplayStatics::OpenLevel(GetWorld(), FName("EndingMap"));
+            }),
+        3.0f,  // 3초
+        false   // 반복 없음
+    );
 }
 void AtalesGameMode::SpawnTrigger()
 {

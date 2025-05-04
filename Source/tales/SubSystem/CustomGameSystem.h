@@ -28,8 +28,12 @@ public:
 
 	int32 DungeonLength;
 	void SetDungeonLength(float Length) { DungeonLength = (int32)Length; };
+
+	float ClearTime = 0.0f;
+
 	UPROPERTY(BlueprintAssignable, Category = "Progress")
-	FProgressUpdated OnProgressChanged;
-	FOnCharacterGoal OnCharacterGoal;
-	FOnCharacterOut OnCharacterOut;
+	FProgressUpdated OnProgressChanged;//진행도 변화 델리게이트
+	FOnCharacterGoal OnCharacterGoal;//캐릭터 완주 델리게이트
+	FOnCharacterOut OnCharacterOut;//캐릭터 탈락 델리게이트
+
 };

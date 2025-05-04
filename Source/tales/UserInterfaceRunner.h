@@ -56,7 +56,9 @@ protected:
     
     virtual void NativeConstruct() override;
     UFUNCTION(BlueprintCallable)
-    void StopTimer(class ARunner* Runner) { bIsTimerRunning = false; };
+    void StopTimer(class ARunner* Runner);
+    void StopTimeOut(ARunner* Runner);
+    void SetSubSystemData(float Time);
 private:
     float CurrentTime = 0.f;
     bool bIsTimerRunning = true;
