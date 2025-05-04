@@ -8,7 +8,7 @@
 #include "Components/CanvasPanelSlot.h"
 #include "Kismet/GameplayStatics.h"
 #include "SubSystem/CustomGameSystem.h"
-
+#include "Components/TextBlock.h"
 
 void UUserInterfaceRunner::UpdateStamina(float CurrentStamina, float MaxStamina)
 {
@@ -63,8 +63,31 @@ void UUserInterfaceRunner::ChangeOrigin()
 void UUserInterfaceRunner::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-}
 
+    CurrentTime += InDeltaTime;
+    if (bIsTimerRunning)
+    {
+        CurrentTime += InDeltaTime;
+
+        if (CTime)
+        {
+            FString FormattedTime;
+            FormatTime(CurrentTime, FormattedTime);
+            CTime->SetText(FText::FromString(FormattedTime));
+        }
+    }
+
+    
+}
+void UUserInterfaceRunner::FormatTime(float TimeInSeconds, FString& OutFormattedTime)
+{
+    // 시간을 분:초.밀리초 형식으로 포맷팅
+    int32 Minutes = FMath::FloorToInt(TimeInSeconds / 60.0f);
+    int32 Seconds = FMath::FloorToInt(TimeInSeconds) % 60;
+    int32 Milliseconds = FMath::FloorToInt((TimeInSeconds - FMath::FloorToFloat(TimeInSeconds)) * 1000);
+
+    OutFormattedTime = FString::Printf(TEXT("%02d:%02d.%03d"), Minutes, Seconds, Milliseconds);
+}
 void UUserInterfaceRunner::NativeConstruct()
 {
     Super::NativeConstruct();

@@ -31,6 +31,9 @@ public:
     UPROPERTY(meta = (BindWidget))
     class UCanvasPanel* Canvas;
 
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* CTime;
+
     // 진행도 업데이트 함수
     UFUNCTION(BlueprintCallable, Category = "UI")
     void UpdateDungeonProgress(float DeadlineProgress, float CharacterProgress);
@@ -48,6 +51,12 @@ public:
 
 protected:
     virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
-    virtual void NativeConstruct() override;
+
+    void FormatTime(float TimeInSeconds, FString& OutFormattedTime);
     
+    virtual void NativeConstruct() override;
+    void StopTimer() { bIsTimerRunning = false; };
+private:
+    float CurrentTime = 0.f;
+    bool bIsTimerRunning = true;
 };
