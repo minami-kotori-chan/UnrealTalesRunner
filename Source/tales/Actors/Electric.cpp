@@ -48,7 +48,12 @@ void AElectric::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor*
     ARunner* Runner = Cast<ARunner>(OtherActor);
     if (Runner)
     {
-        // 여기에 캐릭터의 스텀함수 콜을 넣자
+        
+        if (EColor)
+        {
+            Runner->CharacterOut();
+            return;
+        }
         UE_LOG(LogTemp, Warning, TEXT("Pawn %s overlapped with %s"), *OtherActor->GetName(), *GetName());
         Runner->StunStart();
     }

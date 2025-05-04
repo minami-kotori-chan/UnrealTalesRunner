@@ -31,6 +31,7 @@ public:
 	//움직임 관련 멤버들
 	void SetElectricMovingSpeed(const FVector& InputSpeed);
 	void SetElectricFlatten();
+	void SetRedElectric() { EColor = true; };
 protected:
 	
 	virtual void BeginPlay() override;
@@ -38,6 +39,7 @@ protected:
 	class UBoxComponent* CollisionBox;
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,bool bFromSweep, const FHitResult& SweepResult);
+	
 private:
 	//초기값 설정 관련 멤버들
 	void SetDataFromSubSystem();
@@ -59,4 +61,6 @@ private:
 	void EnsureNegativeYDirection();
 	void ToggleMovementDirection();
 	bool CanMove=true;//좌우상하 이동가능 여부
+
+	bool EColor = false;
 };

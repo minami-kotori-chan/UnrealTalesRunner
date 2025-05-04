@@ -93,7 +93,7 @@ void AMinMonster::MoveActor(float DeltaTime)
     FVector CurrentLocation = GetActorLocation();
     if (GEngine)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("LOCATION: %f"), CurrentLocation.Y));
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("LOCATION: %f"), CurrentLocation.Y));
         //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("MinProgress: %f"), MinimumProgress));
     }
     if (CurrentLocation.Y >= MaxEnableY)

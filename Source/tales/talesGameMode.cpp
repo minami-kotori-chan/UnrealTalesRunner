@@ -44,11 +44,12 @@ void AtalesGameMode::SpawnElectricVFX()
     // 생성 위치 설정
     FVector SpawnLocation;
     bool RotateType = FMath::RandBool();
-    SpawnElectricVFXSetting(DungeonPathArray[0]->GetComponentsBoundingBox(), SpawnLocation, RotateType);
+    SpawnElectricVFXSetting(DungeonPathArray[0]->GetComponentsBoundingBox(), SpawnLocation, RotateType);//이것도 게임인스턴스에서 값불러오게 해서 호출하는게 나을 듯
 
 
     // 레드 블루 랜덤 선택
-    TSubclassOf<AElectric> SelectedElectricClass = (FMath::RandBool()) ? ElectricRed : ElectricBlue;
+    bool ElecType = FMath::RandBool();
+    TSubclassOf<AElectric> SelectedElectricClass = (ElecType ? ElectricRed : ElectricBlue);
 
     if (SelectedElectricClass)
     {
@@ -58,7 +59,8 @@ void AtalesGameMode::SpawnElectricVFX()
         AElectric* SpawnedElectric = GetWorld()->SpawnActor<AElectric>(SelectedElectricClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
         if (SpawnedElectric)
         {
-            
+            if(ElecType) SpawnedElectric->SetRedElectric();
+
             if (RotateType)
             {
                 SpawnedElectric->SetElectricFlatten();

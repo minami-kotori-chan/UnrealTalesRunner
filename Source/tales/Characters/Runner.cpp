@@ -28,8 +28,40 @@ ARunner::ARunner()
 	VfxInvisible();
 	
 	StunWidgetInit();
+	
 }
 void ARunner::ReachGoal()
+{
+	RunnerInputDisable();
+	PlayGoalAnimation();
+	UGameInstance* GameInstance = GetGameInstance();
+	if (GameInstance)
+	{
+		UCustomGameSystem* CustomSubsystem = GameInstance->GetSubsystem<UCustomGameSystem>();
+		if (CustomSubsystem)
+		{
+			CustomSubsystem->OnCharacterGoal.Broadcast(this);//델리게이트 호출
+		}
+	}
+}
+void ARunner::CharacterOut()
+{
+	//탈락 애니메이션 실행 추가 필요
+	GameOver = true;
+	RunnerInputDisable();
+	GetCharacterMovement()->Velocity = FVector(0.f, 0.f, 0.f);
+	GetCharacterMovement()->GravityScale = 0.0f;
+	UGameInstance* GameInstance = GetGameInstance();
+	if (GameInstance)
+	{
+		UCustomGameSystem* CustomSubsystem = GameInstance->GetSubsystem<UCustomGameSystem>();
+		if (CustomSubsystem)
+		{
+			CustomSubsystem->OnCharacterOut.Broadcast(this);
+		}
+	}
+}
+void ARunner::RunnerInputDisable()
 {
 	// 1) 입력 자체 비활성화
 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
@@ -51,16 +83,6 @@ void ARunner::ReachGoal()
 		MeshComponent->SetGenerateOverlapEvents(false);
 		//MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		//MeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
-	}
-	PlayGoalAnimation();
-	UGameInstance* GameInstance = GetGameInstance();
-	if (GameInstance)
-	{
-		UCustomGameSystem* CustomSubsystem = GameInstance->GetSubsystem<UCustomGameSystem>();
-		if (CustomSubsystem)
-		{
-			CustomSubsystem->OnCharacterGoal.Broadcast(this);//델리게이트 호출
-		}
 	}
 }
 void ARunner::StunWidgetVisible(bool VisibleType)

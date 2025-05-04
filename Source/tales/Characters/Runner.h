@@ -21,6 +21,8 @@ public:
 	void VfxVisible();
 	void VfxInvisible();
 	void ReachGoal();
+	void CharacterOut();
+	void RunnerInputDisable();
 	UFUNCTION()
 	void ChangeRunnerState(ECharacterState ChangeState);
 
@@ -169,4 +171,7 @@ private:
 	TSubclassOf<AActor> ActorToSpawn;
 
 	TArray<class AGhostTail*> GhostArray;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "GameOver", meta = (AllowPrivateAccess = "true"))
+	bool GameOver = false;
 };
