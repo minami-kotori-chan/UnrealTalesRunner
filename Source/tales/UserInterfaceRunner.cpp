@@ -102,8 +102,11 @@ void UUserInterfaceRunner::NativeConstruct()
         if (CustomSubsystem)
         {
             CustomSubsystem->OnProgressChanged.AddDynamic(this, &UUserInterfaceRunner::UpdateDungeonProgress);
+            CustomSubsystem->OnCharacterGoal.AddDynamic(this,&UUserInterfaceRunner::StopTimer);
+            CustomSubsystem->OnCharacterOut.AddDynamic(this, &UUserInterfaceRunner::StopTimer);
         }
     }
+
 }
 
 void UUserInterfaceRunner::UpdateDungeonProgress(float DeadlineProgress, float CharacterProgress)

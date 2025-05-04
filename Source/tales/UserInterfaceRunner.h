@@ -55,7 +55,8 @@ protected:
     void FormatTime(float TimeInSeconds, FString& OutFormattedTime);
     
     virtual void NativeConstruct() override;
-    void StopTimer() { bIsTimerRunning = false; };
+    UFUNCTION(BlueprintCallable)
+    void StopTimer(class ARunner* Runner) { bIsTimerRunning = false; };
 private:
     float CurrentTime = 0.f;
     bool bIsTimerRunning = true;

@@ -12,6 +12,7 @@
 class ARunner;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FProgressUpdated, float, DeadlineProgress, float, CharacterProgress);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterGoal, ARunner*,Runner);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterOut, ARunner*, Runner);
 UCLASS()
 class TALES_API UCustomGameSystem : public UGameInstanceSubsystem
 {
@@ -30,4 +31,5 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Progress")
 	FProgressUpdated OnProgressChanged;
 	FOnCharacterGoal OnCharacterGoal;
+	FOnCharacterOut OnCharacterOut;
 };

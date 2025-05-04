@@ -53,6 +53,15 @@ void ARunner::ReachGoal()
 		//MeshComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
 	}
 	PlayGoalAnimation();
+	UGameInstance* GameInstance = GetGameInstance();
+	if (GameInstance)
+	{
+		UCustomGameSystem* CustomSubsystem = GameInstance->GetSubsystem<UCustomGameSystem>();
+		if (CustomSubsystem)
+		{
+			CustomSubsystem->OnCharacterGoal.Broadcast(this);//델리게이트 호출
+		}
+	}
 }
 void ARunner::StunWidgetVisible(bool VisibleType)
 {
