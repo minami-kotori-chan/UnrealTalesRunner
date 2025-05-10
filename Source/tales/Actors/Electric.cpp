@@ -114,7 +114,20 @@ void AElectric::SetElectricFlatten()
     SetActorRotation(CurrentRotation, ETeleportType::ResetPhysics);
     InitializeMovementDirection();//두번 실행되어서(생성될때 한번, 지금 한번) 효율이 떨어지긴 하나 깔끔한 코드를 위해 어쩔수없음
 }
+void AElectric::SetElectricRotatable()
+{
+    CanMove = false;
+    InitializeMovementDirection();//y축만 이동으로 수정
 
+    IsRotatable = true;
+
+    FVector MiddlePosition = (MovingMaxVector + MovingMinVector) * 0.5f;
+    SetActorLocation(FVector(MiddlePosition.X,GetActorLocation().Y, MiddlePosition.Z));//y축은 현재 액터의 값 사용 나머지는 통로의 중간부분으로 수정
+
+    float RandomPitchDegrees = FMath::RandRange(0.f, 90.f);
+    AddActorLocalRotation(FRotator(RandomPitchDegrees, 0, 0));
+    AddActorLocalRotation(FRotator(RandomPitchDegrees, 0, 0));//랜덤값을 180으로 만들어야 하지만 FRotator는 짐벌각때문에 자체적으로 pitch를 90까지만으로 보간하기에 두번 사용해서 이를 우회
+}
 // Called when the game starts or when spawned
 void AElectric::BeginPlay()
 {
@@ -123,6 +136,10 @@ void AElectric::BeginPlay()
     SetDataFromSubSystem();
 
     CanMove = FMath::RandBool();
+    if (FMath::RandRange(1, 20) == 1)
+    {
+        SetElectricRotatable();
+    }
     InitializeMovementDirection();
     
 }
@@ -170,6 +187,7 @@ void AElectric::InitializeMovementDirection()
 // 액터 이동 함수
 void AElectric::MoveActor(float DeltaTime)
 {
+    
     // 현재 위치
     FVector CurrentLocation = GetActorLocation();
 
@@ -184,6 +202,15 @@ void AElectric::MoveActor(float DeltaTime)
 
     // 위치 업데이트
     SetActorLocation(NewLocation);
+
+    if (IsRotatable)
+    {
+        FRotator CurrentRotation = GetActorRotation();
+        // yaw
+        CurrentRotation.Pitch += RotateSpeed*DeltaTime;
+        //SetActorRotation(CurrentRotation, ETeleportType::None); 짐벌락으로 인해 90도이상 회전 불가능
+        AddActorLocalRotation(FRotator(RotateSpeed * DeltaTime, 0, 0));
+    }
 }
 
 // 경계 체크 및 방향 업데이트

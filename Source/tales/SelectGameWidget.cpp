@@ -36,7 +36,7 @@ void USelectGameWidget::OnSliderValueChanged(float Value)
     {
         //FString DistanceLog = FString::Printf(TEXT("Boolean: %d"), DashVfxComponent->bHiddenInGame);
         FString DistanceLog = FString::Printf(TEXT("GetValue: %f"), Value);
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, DistanceLog);
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, DistanceLog);
     }
 
     if (SliderValue)

@@ -31,6 +31,7 @@ public:
 	//움직임 관련 멤버들
 	void SetElectricMovingSpeed(const FVector& InputSpeed);
 	void SetElectricFlatten();
+	void SetElectricRotatable();
 	void SetRedElectric() { EColor = true; };
 protected:
 	
@@ -53,6 +54,8 @@ private:
 	bool bMoveHorizontally = true; // true: 좌우 이동, false: 상하 이동
 	UPROPERTY(EditAnywhere, Category = "Moving")
 	float MovementSpeed = 1000.0f; // 이동 속도
+	UPROPERTY(EditAnywhere, Category = "Moving")
+	float RotateSpeed = 90.f;
 
 	//이동 관련 함수들
 	void InitializeMovementDirection();
@@ -63,4 +66,5 @@ private:
 	bool CanMove=true;//좌우상하 이동가능 여부
 
 	bool EColor = false;
+	bool IsRotatable = false;
 };
