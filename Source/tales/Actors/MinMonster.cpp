@@ -6,6 +6,7 @@
 #include "Camera/CameraShakeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
+#include "../Characters/Runner.h"
 
 // Sets default values
 AMinMonster::AMinMonster()
@@ -26,9 +27,15 @@ AMinMonster::AMinMonster()
     CollisionBoxComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);  // 모든 채널 무시
     CollisionBoxComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);  // 폰만 오버랩
 
+    StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);  // 쿼리(오버랩) 전용
+    StaticMeshComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+    StaticMeshComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);  // 모든 채널 무시
+    StaticMeshComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);  // 폰만 오버랩
+
     // 오버랩 이벤트 등록
     CollisionBoxComponent->OnComponentBeginOverlap.AddDynamic(this, &AMinMonster::OnCameraOverlapBegin);
     CollisionBoxComponent->OnComponentEndOverlap.AddDynamic(this, &AMinMonster::OnCameraOverlapEnd);
+    StaticMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &AMinMonster::OnMinMonsterOverlap);
 }
 void AMinMonster::OnCameraOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -77,11 +84,15 @@ void AMinMonster::SetSpeed(float Fspeed)
 	MoveSpeedExpend = Fspeed;
 }
 
-void AMinMonster::OnMinMonsterOverlap(AActor* OverlappedActor, AActor* OtherActor)
+void AMinMonster::OnMinMonsterOverlap(UPrimitiveComponent* OverlappedComponent,AActor* OtherActor,UPrimitiveComponent* OtherComp,int32 OtherBodyIndex,bool bFromSweep,const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("MinMonster overlapped with: %s"), *OtherActor->GetName());
     
-    
+    ARunner* Runner = Cast<ARunner>(OtherActor);
+    if (Runner)
+    {
+        Runner->CharacterOut();
+    }
 }
 
 void AMinMonster::MoveActor(float DeltaTime)

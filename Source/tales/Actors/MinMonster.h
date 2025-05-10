@@ -25,6 +25,8 @@ public:
 	void CallCameraShake(float DeltaTime);
 	void SetPath(float TotalLength) { TotalDungeonLength = TotalLength; };
 	void SetSpeed(float Fspeed);
+	UFUNCTION()
+	void OnMinMonsterOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	void SetMaxEnableY(float Y) { MaxEnableY = Y; };
 protected:
 	// Called when the game starts or when spawned
@@ -39,8 +41,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float MoveSpeed=700.f;
 	float MoveSpeedExpend = 1.f;
-	UFUNCTION()
-	void OnMinMonsterOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 	void MoveActor(float DeltaTime);
 	UPROPERTY(EditAnywhere, Category = "Camera Shake")
