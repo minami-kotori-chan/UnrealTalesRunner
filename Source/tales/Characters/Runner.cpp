@@ -145,10 +145,10 @@ void ARunner::StartBounce(const FVector& OtherLocationVector,float LaunchStrengt
 		LaunchDirection.Normalize();
 
 		KnockBackStart();//넉백상태넣어줌
-		float LaunchSize = FMath::Clamp(GetCharacterMovement()->Velocity.Size(), LaunchStrength, LaunchStrength*10);
+		//float LaunchSize = FMath::Clamp(GetCharacterMovement()->Velocity.Size(), LaunchStrength, LaunchStrength*10);
 		
 		
-		LaunchCharacter(LaunchDirection * LaunchSize, true, true);// 캐릭터에 튕김을 적용
+		LaunchCharacter(LaunchDirection * LaunchStrength, true, true);// 캐릭터에 튕김을 적용
 		// 1. 두 액터 간의 방향 계산
 		FVector Direction = OtherLocationVector - GetActorLocation();
 		Direction.Normalize();
@@ -360,8 +360,19 @@ void ARunner::KnockBackLanding()
 	{
 		if (bLandingDashRequested)
 		{
-			FVector DashDirection = GetActorForwardVector();
-			LaunchCharacter(DashDirection * LandingDashForce, true, true);
+			FVector DashDirection = GetActorForwardVector();//캐릭터 컨트롤러 가져오는게 오류일시 그냥 액터방향으로 진행
+			// 이 캐릭터를 소유한 플레이어 컨트롤러 가져오기
+			APlayerController* PlayerController = Cast<APlayerController>(GetController());
+			if (PlayerController)
+			{
+				// 플레이어 컨트롤러의 회전 정보 가져오기
+				FRotator PlayerRotation = PlayerController->GetControlRotation();
+
+				// 회전 정보에서 전방 벡터 계산
+				DashDirection = PlayerRotation.Vector();
+			}
+			
+			LaunchCharacter(DashDirection * LandingDashForce*2, true, true);
 			//GetCharacterMovement()->MaxWalkSpeed = DashSpeed;
 			//GetCharacterMovement()->Velocity = DashDirection*DashSpeed;
 			ChangeRunnerState(ECharacterState::ECS_Idle);
